@@ -1,12 +1,12 @@
 <?php
 // public/index.php
-require_once __DIR__ . '/../app/Config.php';
-require_once __DIR__ . '/../app/Database.php';
-require_once __DIR__ . '/../app/Response.php';
-require_once __DIR__ . '/../app/Router.php';
-require_once __DIR__ . '/../app/Auth.php';
-require_once __DIR__ . '/../app/Middleware.php';
-require_once __DIR__ . '/../app/Validators.php';
+require_once __DIR__ . '/../app/config.php';
+require_once __DIR__ . '/../app/database.php';
+require_once __DIR__ . '/../app/response.php';
+require_once __DIR__ . '/../app/router.php';
+require_once __DIR__ . '/../app/authentication.php';
+require_once __DIR__ . '/../app/middleware.php';
+require_once __DIR__ . '/../app/validators.php';
 
 spl_autoload_register(function($class) {
   $base = __DIR__ . '/../app/';
@@ -23,32 +23,32 @@ use App\Middleware;
 $router = new Router();
 
 // Auth
-$router->post('/api/auth/register', ['AuthController', 'register']);
-$router->post('/api/auth/login', ['AuthController', 'login']);
-$router->post('/api/auth/logout', ['AuthController', 'logout']);
+$router->post('/api/auth/register', ['authenticationControl', 'register']);
+$router->post('/api/auth/login', ['authenticationControl', 'login']);
+$router->post('/api/auth/logout', ['authenticationControl', 'logout']);
 
 // Students
-$router->get('/api/students/:student_id', ['StudentController', 'show'], [Middleware::auth()]);
-$router->put('/api/students/:student_id', ['StudentController', 'update'], [Middleware::auth()]);
-$router->get('/api/students/:student_id/company', ['StudentController', 'company'], [Middleware::auth()]);
+$router->get('/api/students/:student_id', ['studController', 'show'], [Middleware::auth()]);
+$router->put('/api/students/:student_id', ['studController', 'update'], [Middleware::auth()]);
+$router->get('/api/students/:student_id/company', ['studController', 'company'], [Middleware::auth()]);
 
 // Companies
-$router->get('/api/companies', ['CompanyController', 'index'], [Middleware::auth()]);
-$router->get('/api/companies/:company_id', ['CompanyController', 'show'], [Middleware::auth()]);
-$router->post('/api/companies', ['CompanyController', 'store'], [Middleware::auth(['admin'])]);
-$router->put('/api/companies/:company_id', ['CompanyController', 'update'], [Middleware::auth(['admin'])]);
+$router->get('/api/companies', ['companyController', 'index'], [Middleware::auth()]);
+$router->get('/api/companies/:company_id', 'companyController', 'show'], [Middleware::auth()]);
+$router->post('/api/companies', 'companyController', 'store'], [Middleware::auth(['admin'])]);
+$router->put('/api/companies/:company_id', 'companyController', 'update'], [Middleware::auth(['admin'])]);
 
 // DTR
-$router->post('/api/dtr/clock-in', ['DtrController', 'clockIn'], [Middleware::auth(['student'])]);
-$router->post('/api/dtr/clock-out', ['DtrController', 'clockOut'], [Middleware::auth(['student'])]);
-$router->get('/api/dtr/:student_id', ['DtrController', 'list'], [Middleware::auth()]);
-$router->get('/api/dtr/:student_id/summary', ['DtrController', 'summary'], [Middleware::auth()]);
+$router->post('/api/dtr/clock-in', ['DTRController', 'clockIn'], [Middleware::auth(['student'])]);
+$router->post('/api/dtr/clock-out', ['DTRController', 'clockOut'], [Middleware::auth(['student'])]);
+$router->get('/api/dtr/:student_id', ['DTRController', 'list'], [Middleware::auth()]);
+$router->get('/api/dtr/:student_id/summary', ['DTRController', 'summary'], [Middleware::auth()]);
 
 // Activities
-$router->post('/api/activities', ['ActivityController', 'store'], [Middleware::auth(['student'])]);
-$router->get('/api/activities/:student_id', ['ActivityController', 'list'], [Middleware::auth()]);
-$router->put('/api/activities/:activity_id', ['ActivityController', 'update'], [Middleware::auth()]);
-$router->get('/api/activities/:activity_id/summary', ['ActivityController', 'summary'], [Middleware::auth()]);
+$router->post('/api/activities', ['ActController', 'store'], [Middleware::auth(['student'])]);
+$router->get('/api/activities/:student_id', ['ActController', 'list'], [Middleware::auth()]);
+$router->put('/api/activities/:activity_id', ['ActController', 'update'], [Middleware::auth()]);
+$router->get('/api/activities/:activity_id/summary', ['ActController', 'summary'], [Middleware::auth()]);
 
 // Announcements
 $router->post('/api/announcements', ['AnnouncementController', 'store'], [Middleware::auth(['admin','coordinator'])]);
